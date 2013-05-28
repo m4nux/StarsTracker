@@ -21,7 +21,9 @@ public class StarsTracker
    private IVideoCapture           videoCapture;
    private IHardwareEventHandler   hardwareEventHandler;
    private IModelToGuiEventHandler modelToGuiEventHandler;
-   private int                     pixelSensitivity;
+   
+   private int                     minPixelSensitivity = 2;
+   private int                     maxPixelSensitivity = 5;
    
    public StarsTracker()
    {
@@ -96,16 +98,27 @@ public class StarsTracker
    {
       this.modelToGuiEventHandler = modelToGuiEventHandler;
    }
-   public int getPixelSensitivity()
+   
+   public int getMinPixelSensitivity()
    {
-      return pixelSensitivity;
+      return minPixelSensitivity;
    }
-
-   public void setPixelSensitivity(int pixelSensitivity)
+   
+   public void setMinPixelSensitivity(int pixelSensitivity)
    {
-      this.pixelSensitivity = pixelSensitivity;
+      this.minPixelSensitivity = pixelSensitivity;
    }
-
+   
+   public int getMaxPixelSensitivity()
+   {
+      return maxPixelSensitivity;
+   }
+   
+   public void setMaxPixelSensitivity(int maxPixelSensitivity)
+   {
+      this.maxPixelSensitivity = maxPixelSensitivity;
+   }
+   
    public void initWebCam() throws StarsTrackerException
    {
       if (!this.videoCapture.open(this.webcamNumber))
@@ -168,11 +181,13 @@ public class StarsTracker
                if (shiftingPoint != null)
                {
                   
-                  if ((shiftingPoint.x > Math.abs(this.pixelSensitivity))
-                           && (shiftingPoint.y > Math.abs(this.pixelSensitivity)))
+                  if ((Math.abs(shiftingPoint.x) >= Math.abs(this.minPixelSensitivity) && (Math
+                           .abs(shiftingPoint.x) <= Math.abs(this.maxPixelSensitivity)))
+                           || ((Math.abs(shiftingPoint.y) >= Math.abs(this.minPixelSensitivity)) && (Math
+                                    .abs(shiftingPoint.y) <= Math.abs(this.maxPixelSensitivity))))
                   {
                      /* décalage détecté */
-                     Utils.LOGGER.info("Shifting point : " + shiftingPoint.toString());
+                     Utils.LOGGER.info("Shifting threshold reached : " + shiftingPoint.toString());
                      
                      featuresRef = featuresToCompare;
                      imageRef = imageToCompare;

@@ -19,6 +19,9 @@ public interface IGuiToModelEventHandler
    public void onStepperSpeedYChange(int parseInt);
    public void onCoefPixelSpeedXChange(int parseInt);
    public void onCoefPixelSpeedYChange(int parseInt);
+   
+   public void onMinPixelSensitivityChange(int parseInt);
+   public void onMaxPixelSensitivityChange(int parseInt);
 
    
 }

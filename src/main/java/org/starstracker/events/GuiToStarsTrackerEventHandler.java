@@ -194,5 +194,17 @@ public class GuiToStarsTrackerEventHandler implements IGuiToModelEventHandler
          e.printStackTrace();
       }
    }
+
+   @Override
+   public void onMinPixelSensitivityChange(int parseInt)
+   {
+      this.app.setMinPixelSensitivity(parseInt);
+   }
+
+   @Override
+   public void onMaxPixelSensitivityChange(int parseInt)
+   {
+      this.app.setMaxPixelSensitivity(parseInt);
+   }
    
 }

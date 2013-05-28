@@ -34,16 +34,18 @@ import org.starstracker.events.IGuiToModelEventHandler;
 public class StartTrackerGUI extends JPanel implements ActionListener
 {
    
-   private static final long       serialVersionUID = 1L;
-   private String                  newline          = "\n";
-   private static final String     stepperSpeedX    = "Stepper speed X";
-   private static final String     stepperSpeedY    = "Stepper speed Y";
-   private static final String     coefStepPixelX   = "Coef step/pixel X";
-   private static final String     coefStepPixelY   = "Coef step/pixel Y";
-   private static final String     minDistance      = "Min distance in Pixel";
-   private static final String     maxCorners       = "Max corners";
-   private static final String     qualityLevel     = "Quality level";
-   private static final String     numWebcam        = "WebCam number";
+   private static final long       serialVersionUID    = 1L;
+   private String                  newline             = "\n";
+   private static final String     stepperSpeedX       = "Stepper speed X";
+   private static final String     stepperSpeedY       = "Stepper speed Y";
+   private static final String     coefStepPixelX      = "Coef step/pixel X";
+   private static final String     coefStepPixelY      = "Coef step/pixel Y";
+   private static final String     minDistance         = "Min distance in Pixel";
+   private static final String     maxCorners          = "Max corners";
+   private static final String     qualityLevel        = "Quality level";
+   private static final String     numWebcam           = "WebCam number";
+   private static final String     minPixelSensitivity = "Pixel min sensitivity";
+   private static final String     maxPixelSensitivity = "Pixel max sensitivity";
    
    private JLabel                  actionLabel;
    
@@ -56,7 +58,7 @@ public class StartTrackerGUI extends JPanel implements ActionListener
    
    private JButton                 buttonmajcorners;
    
-   private JPanelImage             jpanelImage      = new JPanelImage(null);
+   private JPanelImage             jpanelImage         = new JPanelImage(null);
    private JTextPane               textPane;
    
    private JFormattedTextField     stepperSpeedXField;
@@ -65,8 +67,10 @@ public class StartTrackerGUI extends JPanel implements ActionListener
    private JFormattedTextField     coefPixelSpeedYField;
    private JFormattedTextField     maxCornersField;
    private JFormattedTextField     minDistanceField;
-   private JTextField     qualityLevelField;
+   private JTextField              qualityLevelField;
    private JFormattedTextField     numWebcamField;
+   private JFormattedTextField     minPixelSensitivityField;
+   private JFormattedTextField     maxPixelSensitivityField;
    
    private JFormattedTextField     textFieldxminus;
    private JFormattedTextField     textFieldyminus;
@@ -81,6 +85,8 @@ public class StartTrackerGUI extends JPanel implements ActionListener
    private JButton                 minDistanceButton;
    private JButton                 qualityLevelButton;
    private JButton                 numWebcamButton;
+   private JButton                 minPixelSensitivityButton;
+   private JButton                 maxPixelSensitivityButton;
    
    private IGuiToModelEventHandler guiToModelEventHandler;
    
@@ -158,6 +164,16 @@ public class StartTrackerGUI extends JPanel implements ActionListener
       this.numWebcamField.setActionCommand(numWebcam);
       this.numWebcamField.addActionListener(this);
       
+      // Create a formatted text field.
+      this.minPixelSensitivityField = new JFormattedTextField(2);
+      this.minPixelSensitivityField.setActionCommand(minPixelSensitivity);
+      this.minPixelSensitivityField.addActionListener(this);
+      
+      // Create a formatted text field.
+      this.maxPixelSensitivityField = new JFormattedTextField(5);
+      this.maxPixelSensitivityField.setActionCommand(maxPixelSensitivity);
+      this.maxPixelSensitivityField.addActionListener(this);
+      
       this.stepperSpeedXButton = new JButton("Ok");
       this.stepperSpeedYButton = new JButton("Ok");
       this.coefPixelSpeedXButton = new JButton("Ok");
@@ -166,6 +182,8 @@ public class StartTrackerGUI extends JPanel implements ActionListener
       this.minDistanceButton = new JButton("Ok");
       this.qualityLevelButton = new JButton("Ok");
       this.numWebcamButton = new JButton("Ok");
+      this.minPixelSensitivityButton = new JButton("Ok");
+      this.maxPixelSensitivityButton = new JButton("Ok");
       
       // Create some labels for the fields.
       JLabel stepperSpeedXLabel = new JLabel(stepperSpeedX + ": ");
@@ -184,6 +202,10 @@ public class StartTrackerGUI extends JPanel implements ActionListener
       qualityLevelLabel.setLabelFor(qualityLevelField);
       JLabel numWebcamLabel = new JLabel(numWebcam + ": ");
       numWebcamLabel.setLabelFor(numWebcamField);
+      JLabel minPixelSensitivityLabel = new JLabel(minPixelSensitivity + ": ");
+      numWebcamLabel.setLabelFor(numWebcamField);
+      JLabel maxPixelSensitivityLabel = new JLabel(maxPixelSensitivity + ": ");
+      numWebcamLabel.setLabelFor(numWebcamField);
       
       // Create a text area.
       JTextArea textArea = new JTextArea("This is an editable JTextArea. "
@@ -195,7 +217,7 @@ public class StartTrackerGUI extends JPanel implements ActionListener
       textArea.setWrapStyleWord(true);
       
       this.jpanelImage = new JPanelImage(null);
-      //this.jpanelImage.setBackground(Color.TRANSLUCENT);
+      // this.jpanelImage.setBackground(Color.TRANSLUCENT);
       
       JScrollPane areaScrollPane = new JScrollPane(this.jpanelImage);
       areaScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -215,13 +237,13 @@ public class StartTrackerGUI extends JPanel implements ActionListener
       
       JLabel[] labels =
       { stepperSpeedXLabel, stepperSpeedYLabel, coefStepPixelXLabel, coefStepPixelYLabel,
-               maxCornersLabel, minDistanceLabel, qualityLevelLabel, numWebcamLabel };
+               maxCornersLabel, minDistanceLabel, qualityLevelLabel, numWebcamLabel , minPixelSensitivityLabel, maxPixelSensitivityLabel };
       JTextField[] textFields =
       { stepperSpeedXField, stepperSpeedYField, coefPixelSpeedXField, coefPixelSpeedYField,
-               maxCornersField, minDistanceField, qualityLevelField, numWebcamField };
+               maxCornersField, minDistanceField, qualityLevelField, numWebcamField , minPixelSensitivityField , maxPixelSensitivityField };
       JButton[] majButtons =
       { stepperSpeedXButton, stepperSpeedYButton, coefPixelSpeedXButton, coefPixelSpeedYButton,
-               maxCornersButton, minDistanceButton, qualityLevelButton, numWebcamButton };
+               maxCornersButton, minDistanceButton, qualityLevelButton, numWebcamButton, minPixelSensitivityButton, maxPixelSensitivityButton };
       addLabelTextRows(labels, textFields, majButtons, gridbag, textControlsPane);
       
       // Create a label to put messages during an action event.
@@ -517,7 +539,8 @@ public class StartTrackerGUI extends JPanel implements ActionListener
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            guiToModelEventHandler.onCoefPixelSpeedXChange(Integer.parseInt(coefPixelSpeedXField.getText()));
+            guiToModelEventHandler.onCoefPixelSpeedXChange(Integer.parseInt(coefPixelSpeedXField
+                     .getText()));
          }
       });
       this.coefPixelSpeedYButton.addActionListener(new ActionListener()
@@ -525,7 +548,8 @@ public class StartTrackerGUI extends JPanel implements ActionListener
          @Override
          public void actionPerformed(ActionEvent e)
          {
-            guiToModelEventHandler.onCoefPixelSpeedYChange(Integer.parseInt(coefPixelSpeedYField.getText()));
+            guiToModelEventHandler.onCoefPixelSpeedYChange(Integer.parseInt(coefPixelSpeedYField
+                     .getText()));
          }
       });
       this.maxCornersButton.addActionListener(new ActionListener()
@@ -558,6 +582,22 @@ public class StartTrackerGUI extends JPanel implements ActionListener
          public void actionPerformed(ActionEvent e)
          {
             guiToModelEventHandler.onNumWebcamChange(Integer.parseInt(numWebcamField.getText()));
+         }
+      });
+      this.minPixelSensitivityButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            guiToModelEventHandler.onMinPixelSensitivityChange(Integer.parseInt(minPixelSensitivityField.getText()));
+         }
+      });
+      this.maxPixelSensitivityButton.addActionListener(new ActionListener()
+      {
+         @Override
+         public void actionPerformed(ActionEvent e)
+         {
+            guiToModelEventHandler.onMaxPixelSensitivityChange(Integer.parseInt(maxPixelSensitivityField.getText()));
          }
       });
    }

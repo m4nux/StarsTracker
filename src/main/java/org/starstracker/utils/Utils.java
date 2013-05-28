@@ -4,7 +4,6 @@ import gnu.io.CommPortIdentifier;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -100,8 +99,8 @@ public class Utils implements Constants
                 * Si les deux points comparés sont plus proches que la distance
                 * seuil/2, dans ce cas, on peut appairé les points
                 */
-               double xShift = Math.abs(p1.x - p2.x);
-               double yShift = Math.abs(p1.y - p2.y);
+               double xShift = p1.x - p2.x;
+               double yShift = p1.y - p2.y;
                LOGGER.debug("Point " + p1.toString() + " match with point " + p2.toString()
                         + " xshift=" + xShift + ", yShift=" + yShift);
                /*
@@ -149,7 +148,7 @@ public class Utils implements Constants
             returnYShift = y;
          }
       }
-      if (returnXShift != null)
+      if ((returnXShift != null) && (returnYShift != null))
       {
          return new Point(returnXShift, returnYShift);
       }
