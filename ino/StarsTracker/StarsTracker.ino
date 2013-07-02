@@ -8,14 +8,15 @@
 #include <Streaming.h>
 #include <Stepper.h>
 
-#define STEPS 48
+#define STEPSX 48
+#define STEPSY 200
 
 // Mustnt conflict / collide with our message payload data. Fine if we use base64 library ^^ above
 char field_separator = ',';
 char command_separator = ';';
 
-Stepper stepperX(STEPS, 4, 5, 6, 7);
-Stepper stepperY(STEPS, 9, 10, 11, 12);
+Stepper stepperX(STEPSX, 4, 5, 6, 7);
+Stepper stepperY(STEPSY, 10, 11, 12, 13);
 
 int coefPixelStepX=0;
 int coefPixelStepY=0;
@@ -299,6 +300,10 @@ void loop() {
     timeout();
     previousMillis = millis();
   }
+
+  // La vitesse en declinaison de base
+  //stepperX.setSpeed(100);
+  //stepperX.step(2);
 
   // Loop.
 }

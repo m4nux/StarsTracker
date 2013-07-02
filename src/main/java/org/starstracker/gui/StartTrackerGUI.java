@@ -125,12 +125,12 @@ public class StartTrackerGUI extends JPanel implements ActionListener
       setLayout(new BorderLayout());
       
       // Create a regular text field.
-      this.stepperSpeedXField = new JFormattedTextField(100);
+      this.stepperSpeedXField = new JFormattedTextField(40);
       this.stepperSpeedXField.setActionCommand(stepperSpeedX);
       this.stepperSpeedXField.addActionListener(this);
       
       // Create a password field.
-      this.stepperSpeedYField = new JFormattedTextField(100);
+      this.stepperSpeedYField = new JFormattedTextField(200);
       this.stepperSpeedYField.setActionCommand(stepperSpeedY);
       this.stepperSpeedYField.addActionListener(this);
       
@@ -247,9 +247,9 @@ public class StartTrackerGUI extends JPanel implements ActionListener
       addLabelTextRows(labels, textFields, majButtons, gridbag, textControlsPane);
       
       // Create a label to put messages during an action event.
-      startTrackButton = new JButton("Start arduino's steppers");
+      startTrackButton = new JButton("Start tracking");
       startTrackButton.setName("start");
-      stopTrackButton = new JButton("Stop arduino's steppers");
+      stopTrackButton = new JButton("Stop tracking");
       stopTrackButton.setName("stop");
       
       actionLabel = new JLabel("No informations");

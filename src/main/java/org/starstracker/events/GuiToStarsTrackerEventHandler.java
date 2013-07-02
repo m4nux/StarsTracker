@@ -27,26 +27,32 @@ public class GuiToStarsTrackerEventHandler implements IGuiToModelEventHandler
    public void onStartArduinoSteppers(double speedX, double speedY, double coefStepPixelX,
             double coefStepPixelY)
    {
-      try
-      {
-         this.arduinoEvent.setSpeed("X", speedX);
-         this.arduinoEvent.setSpeed("Y", speedY);
-         this.arduinoEvent.setCoefPixelStep("X", coefStepPixelX);
-         this.arduinoEvent.setCoefPixelStep("Y", coefStepPixelY);
-         this.app.setHardwareEventHandler(this.arduinoEvent);
-      }
-      catch (StarsTrackerException e)
-      {
-         // TODO Auto-generated catch block
-         e.printStackTrace();
-      }
+         this.app.setTracking(true);
+         
+         try
+         {
+            if (this.arduinoEvent!=null)
+            {
+               this.arduinoEvent.setSpeed("X", speedX);
+               this.arduinoEvent.setSpeed("Y", speedY);
+               this.arduinoEvent.setCoefPixelStep("X", coefStepPixelX);
+               this.arduinoEvent.setCoefPixelStep("Y", coefStepPixelY);
+               this.app.setHardwareEventHandler(this.arduinoEvent);
+            }
+         }
+         catch (StarsTrackerException e)
+         {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
       
    }
    
    @Override
    public void onStopArduinoSteppers()
    {
-      // TODO Auto-generated method stub
+      this.app.setTracking(false);
+
       this.app.setHardwareEventHandler(null);
    }
    
@@ -55,7 +61,7 @@ public class GuiToStarsTrackerEventHandler implements IGuiToModelEventHandler
    {
       try
       {
-         this.arduinoEvent.move("X", val);
+         this.arduinoEvent.move("D", val);
       }
       catch (StarsTrackerException e)
       {
@@ -69,7 +75,7 @@ public class GuiToStarsTrackerEventHandler implements IGuiToModelEventHandler
    {
       try
       {
-         this.arduinoEvent.move("X", -val);
+         this.arduinoEvent.move("D", -val);
       }
       catch (StarsTrackerException e)
       {
@@ -83,7 +89,7 @@ public class GuiToStarsTrackerEventHandler implements IGuiToModelEventHandler
    {
       try
       {
-         this.arduinoEvent.move("Y", val);
+         this.arduinoEvent.move("A", val);
       }
       catch (StarsTrackerException e)
       {
@@ -97,7 +103,7 @@ public class GuiToStarsTrackerEventHandler implements IGuiToModelEventHandler
    {
       try
       {
-         this.arduinoEvent.move("Y", -val);
+         this.arduinoEvent.move("A", -val);
       }
       catch (StarsTrackerException e)
       {

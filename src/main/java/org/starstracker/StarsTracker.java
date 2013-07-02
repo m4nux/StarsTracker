@@ -5,6 +5,7 @@ import java.awt.image.BufferedImage;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
+import org.opencv.core.Scalar;
 import org.starstracker.constants.Constants;
 import org.starstracker.events.IModelToGuiEventHandler;
 import org.starstracker.events.IHardwareEventHandler;
@@ -22,8 +23,10 @@ public class StarsTracker
    private IHardwareEventHandler   hardwareEventHandler;
    private IModelToGuiEventHandler modelToGuiEventHandler;
    
-   private int                     minPixelSensitivity = 2;
-   private int                     maxPixelSensitivity = 5;
+   private int                     minPixelSensitivity       = 2;
+   private int                     maxPixelSensitivity       = 5;
+   
+   private boolean                 tracking                  = false;
    
    public StarsTracker()
    {
@@ -119,6 +122,16 @@ public class StarsTracker
       this.maxPixelSensitivity = maxPixelSensitivity;
    }
    
+   public boolean isTracking()
+   {
+      return tracking;
+   }
+   
+   public void setTracking(boolean tracking)
+   {
+      this.tracking = tracking;
+   }
+   
    public void initWebCam() throws StarsTrackerException
    {
       if (!this.videoCapture.open(this.webcamNumber))
@@ -139,6 +152,27 @@ public class StarsTracker
       }
    }
    
+   public void start() throws StarsTrackerException
+   {
+      Mat image = null;
+      
+      this.initWebCam();
+      
+      /*
+       * MonteVideoRecorder vid = new MonteVideoRecorder(); vid.start();
+       */
+      while (!this.tracking)
+      {
+         image = new Mat();
+         this.videoCapture.read(image);
+         final BufferedImage img = Utils.convert(image);
+         
+         modelToGuiEventHandler.onImageChanged(img);
+      }
+      
+      this.track();
+   }
+   
    public void track() throws StarsTrackerException
    {
       Mat imageRef = null;
@@ -156,62 +190,89 @@ public class StarsTracker
       {
          try
          {
-            if (featuresRef == null)
+            if (!this.tracking)
             {
-               /* Taking first image */
-               imageRef = new Mat();
-               this.videoCapture.read(imageRef);
-               featuresRef = Utils.getGoodFeaturesToTrack(
-                        "/home/manux/starsTracker/featuresRef.png", imageRef, this.maxCorners,
-                        this.qualityLevel, this.minDistanceBetweenCorners);
+               Mat image = null;
+               image = new Mat();
+               this.videoCapture.read(image);
+               final BufferedImage img = Utils.convert(image);
+               
+               modelToGuiEventHandler.onImageChanged(img);
+               featuresRef = null;
             }
             else
             {
                
-               imageToCompare = new Mat();
-               this.videoCapture.read(imageToCompare);
-               
-               featuresToCompare = Utils.getGoodFeaturesToTrack(
-                        "/home/manux/starsTracker/featuresToCompare.png", imageToCompare,
-                        this.maxCorners, this.qualityLevel, this.minDistanceBetweenCorners);
-               
-               Point shiftingPoint = Utils.computeShifting(featuresRef, featuresToCompare,
-                        this.minDistanceBetweenCorners);
-               
-               if (shiftingPoint != null)
+               if (featuresRef == null)
+               {
+                  /* Taking first image */
+                  imageRef = new Mat();
+                  this.videoCapture.read(imageRef);
+                  featuresRef = Utils.getGoodFeaturesToTrack(
+                           "/home/manux/starsTracker/featuresRef.png", imageRef, this.maxCorners,
+                           this.qualityLevel, this.minDistanceBetweenCorners, new Scalar(255, 255,
+                                    0));
+                  Utils.drawCircles(featuresRef, imageRef, new Scalar(255, 255, 0));
+               }
+               else
                {
                   
-                  if ((Math.abs(shiftingPoint.x) >= Math.abs(this.minPixelSensitivity) && (Math
-                           .abs(shiftingPoint.x) <= Math.abs(this.maxPixelSensitivity)))
-                           || ((Math.abs(shiftingPoint.y) >= Math.abs(this.minPixelSensitivity)) && (Math
-                                    .abs(shiftingPoint.y) <= Math.abs(this.maxPixelSensitivity))))
+                  imageToCompare = new Mat();
+                  this.videoCapture.read(imageToCompare);
+                  
+                  featuresToCompare = Utils.getGoodFeaturesToTrack(
+                           "/home/manux/starsTracker/featuresToCompare.png", imageToCompare,
+                           this.maxCorners, this.qualityLevel, this.minDistanceBetweenCorners,
+                           new Scalar(255, 0, 0));
+
+                  Utils.drawCircles(featuresToCompare, imageToCompare, new Scalar(255, 0, 0));
+                  Utils.drawCircles(featuresRef, imageToCompare, new Scalar(255, 255, 0));
+                  
+                  Point shiftingPoint = Utils.computeShifting(featuresRef, featuresToCompare,
+                           this.minDistanceBetweenCorners);
+                  
+                  if (shiftingPoint != null)
                   {
-                     /* décalage détecté */
-                     Utils.LOGGER.info("Shifting threshold reached : " + shiftingPoint.toString());
                      
-                     featuresRef = featuresToCompare;
-                     imageRef = imageToCompare;
-                     /* On prévient l'interface */
-                     modelToGuiEventHandler.onShiftDetected(shiftingPoint);
-                     /* On prévient l'arduino */
-                     if (hardwareEventHandler != null)
+                     if ((Math.abs(shiftingPoint.x) >= Math.abs(this.minPixelSensitivity) && (Math
+                              .abs(shiftingPoint.x) <= Math.abs(this.maxPixelSensitivity)))
+                              || ((Math.abs(shiftingPoint.y) >= Math.abs(this.minPixelSensitivity)) && (Math
+                                       .abs(shiftingPoint.y) <= Math.abs(this.maxPixelSensitivity))))
                      {
-                        hardwareEventHandler.onShiftDetected(shiftingPoint);
+                        /* décalage détecté */
+                        Utils.LOGGER.info("Shifting threshold reached : "
+                                 + shiftingPoint.toString());
+                        
+                        /*
+                         * Partie à commenter pour avoir l'image de départ comme
+                         * referentiel
+                         */
+                        // featuresRef = featuresToCompare;
+                        // imageRef = imageToCompare;
+                        
+                        /* On prévient l'interface */
+                        modelToGuiEventHandler.onShiftDetected(shiftingPoint);
+                        /* On prévient l'arduino */
+                        if (hardwareEventHandler != null)
+                        {
+                           hardwareEventHandler.onShiftDetected(shiftingPoint);
+                        }
+                        
                      }
-                     
                   }
+                  
+                  final BufferedImage img = Utils.convert(imageToCompare);
+                  
+                  /*
+                   * vid.record(img); if (i==1000) { vid.terminate(); }
+                   */
+                  modelToGuiEventHandler.onImageChanged(img);
+                  
                }
                
-               final BufferedImage img = Utils.convert(imageToCompare);
-               
-               /*
-                * vid.record(img); if (i==1000) { vid.terminate(); }
-                */
-               modelToGuiEventHandler.onImageChanged(img);
-               
+               Thread.sleep(Constants.SLEEP);
             }
             
-            Thread.sleep(Constants.SLEEP);
          }
          catch (InterruptedException e)
          {

@@ -18,6 +18,7 @@ class Main
       //this.app.setVideoCapture(new OpenCvVideoCapture());
       this.app.setVideoCapture(new AviVideoCapture("/home/manux/monte.avi"));
       this.app.setModelToGuiEventHandler(new StarsTrackerToGuiEventHandler(this.starsTrackerGui));
+      //this.app.start();
       this.app.track();
    }
    

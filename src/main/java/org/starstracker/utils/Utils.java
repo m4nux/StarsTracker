@@ -159,7 +159,7 @@ public class Utils implements Constants
    }
    
    public static MatOfPoint getGoodFeaturesToTrack(String filename, Mat image, int nbCorners, double qualityLevel,
-            double minDistance)
+            double minDistance, Scalar color)
    {
       Mat dst = new Mat();
       MatOfPoint features = new MatOfPoint();
@@ -170,13 +170,13 @@ public class Utils implements Constants
       
       Imgproc.goodFeaturesToTrack(dst, features, nbCorners, qualityLevel, minDistance);
       
-      Utils.LOGGER.info(features.dump());
-      
+      Utils.LOGGER.debug(features.dump());
+      /*
       for (Point p : features.toArray())
       {
-         Core.circle(image, p, 5, new Scalar(255, 0, 0), 1);
+         Core.circle(image, p, 5, color, 1);
       }
-      
+      */
       // Save the visualized detection.
       //Utils.LOGGER.debug(String.format("Writing %s", filename));
       //Utils.LOGGER.debug(String.format("Size of features w:%f h:%f", features.size().height,
@@ -184,6 +184,15 @@ public class Utils implements Constants
       //Highgui.imwrite(filename, image);
       
       return features;
+   }
+   
+   
+   public static void drawCircles(MatOfPoint features, Mat image, Scalar color)
+   {
+      for (Point p : features.toArray())
+      {
+         Core.circle(image, p, 5, color, 1);
+      }
    }
    
    public static String[] listSerialPorts()

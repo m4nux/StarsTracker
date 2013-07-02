@@ -58,8 +58,7 @@ public class ArduinoControler
    {
       try
       {
-         System.out.println(commande);
-         writer.write(commande);
+         writer.write(commande + "\r");
          writer.flush();
          out.flush();
          // Thread.sleep(100);
