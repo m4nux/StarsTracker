@@ -12,7 +12,10 @@ class Main
    private StartTrackerGUI starsTrackerGui;
    private StarsTracker    app = new StarsTracker();
 
-   
+   /**
+    * Ajout javadoc1
+    * @throws StarsTrackerException
+    */
    public void track() throws StarsTrackerException
    {
       //this.app.setVideoCapture(new OpenCvVideoCapture());
