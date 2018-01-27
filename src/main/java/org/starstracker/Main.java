@@ -7,6 +7,8 @@ import org.starstracker.gui.StartTrackerGUI;
 import org.starstracker.gui.video.AviVideoCapture;
 import org.starstracker.gui.video.OpenCvVideoCapture;
 
+import java.util.ArrayList;
+
 class Main
 {
    private StartTrackerGUI starsTrackerGui;
@@ -15,6 +17,7 @@ class Main
    
    public void track() throws StarsTrackerException
    {
+      List<String> list = new ArrayList<String>();
       //this.app.setVideoCapture(new OpenCvVideoCapture());
       this.app.setVideoCapture(new AviVideoCapture("/home/manux/monte.avi"));
       this.app.setModelToGuiEventHandler(new StarsTrackerToGuiEventHandler(this.starsTrackerGui));
