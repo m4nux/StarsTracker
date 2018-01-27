@@ -18,6 +18,7 @@ class Main
    public void track() throws StarsTrackerException
    {
       List<String> list = new ArrayList<String>();
+      List<String> list2 = new ArrayList<String>();
       //this.app.setVideoCapture(new OpenCvVideoCapture());
       this.app.setVideoCapture(new AviVideoCapture("/home/manux/monte.avi"));
       this.app.setModelToGuiEventHandler(new StarsTrackerToGuiEventHandler(this.starsTrackerGui));
